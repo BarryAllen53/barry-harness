@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/BarryAllen53/barry-harness/blob/main/SECURITY.md
+    about: Follow the private reporting steps in SECURITY.md. Never post vulnerability details in a public issue.
+  - name: Contact the maintainer
+    url: https://github.com/BarryAllen53
+    about: Reach the maintainer through the GitHub profile for anything that should not be public.

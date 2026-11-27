@@ -1,0 +1,29 @@
+[package]
+name = "bh-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+authors.workspace = true
+description.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[[bin]]
+name = "bh"
+path = "src/main.rs"
+
+[dependencies]
+bh-anthropic.workspace = true
+bh-provider.workspace = true
+bh-types.workspace = true
+futures-util.workspace = true
+tokio = { workspace = true, features = ["rt", "signal"] }
+tokio-util.workspace = true
+
+[lints]
+workspace = true

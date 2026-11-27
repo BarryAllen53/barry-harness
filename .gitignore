@@ -1,0 +1,6 @@
+target/
+dist/
+src-tauri/gen/
+*.pdb
+.env
+.env.*

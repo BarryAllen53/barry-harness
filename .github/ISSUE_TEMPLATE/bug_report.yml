@@ -1,0 +1,82 @@
+name: Bug report
+description: Report something that does not work as expected.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Remove API keys, tokens, client secrets and personal data from everything you paste below.
+        Security vulnerabilities must be reported privately as described in SECURITY.md, not here.
+  - type: input
+    id: version
+    attributes:
+      label: Barry Harness version
+      description: Release version or commit hash.
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 24H2
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Desktop app
+        - bh command line
+        - Sign-in and credentials
+        - Anthropic provider
+        - OpenAI provider
+        - Gemini provider
+        - Antigravity provider
+        - Build or tooling
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Provider and model
+      description: For example Anthropic with claude-opus-5-5, signed in or with an API key.
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Settings
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: Include the error message shown in the app.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Relevant lines from %LOCALAPPDATA%\BarryHarness\logs, with secrets removed.
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched the existing issues.
+          required: true
+        - label: I removed keys, tokens and personal data from this report.
+          required: true

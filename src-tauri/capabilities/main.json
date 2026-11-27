@@ -1,0 +1,8 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main-window",
+  "description": "Permissions of the main window: chat, settings, credentials, sign-in, model catalog, projects and menu events.",
+  "windows": ["main"],
+  "local": true,
+  "permissions": ["core:event:default", "allow-send-prompt", "allow-cancel-turn", "allow-new-chat", "allow-settings-get", "allow-settings-set", "allow-credential-state", "allow-credential-set", "allow-credential-delete", "allow-sign-in", "allow-sign-in-paste", "allow-sign-in-code", "allow-sign-out", "allow-models-list", "allow-project-pick", "allow-project-remove", "allow-projects-list"]
+}

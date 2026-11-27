@@ -1,0 +1,18 @@
+pub const APP_COMMANDS: [&str; 16] = [
+    "send_prompt",
+    "cancel_turn",
+    "new_chat",
+    "settings_get",
+    "settings_set",
+    "credential_state",
+    "credential_set",
+    "credential_delete",
+    "sign_in",
+    "sign_in_paste",
+    "sign_in_code",
+    "sign_out",
+    "models_list",
+    "project_pick",
+    "project_remove",
+    "projects_list",
+];

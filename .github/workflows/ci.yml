@@ -1,0 +1,45 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Install toolchain from rust-toolchain.toml
+        run: rustup toolchain install
+
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0
+
+      - name: Install cargo-machete, cargo-deny and trunk
+        uses: taiki-e/install-action@893d6ee8d714b6c7dfe2bcd94e5759e9a7958a7e
+        with:
+          tool: cargo-machete@0.10.1,cargo-deny@0.22.1,trunk@0.22.2
+
+      - name: Build the frontend
+        run: trunk build --locked
+
+      - name: Check the frontend for wasm32
+        run: cargo clippy --locked --package bh-frontend --target wasm32-unknown-unknown -- -D warnings
+
+      - name: Run fmt, clippy, lint-comments, machete and deny
+        run: cargo xtask check

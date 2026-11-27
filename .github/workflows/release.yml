@@ -1,0 +1,70 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Install toolchain from rust-toolchain.toml
+        run: rustup toolchain install
+
+      - name: Install trunk
+        uses: taiki-e/install-action@893d6ee8d714b6c7dfe2bcd94e5759e9a7958a7e
+        with:
+          tool: trunk@0.22.2
+
+      - name: Build the frontend
+        run: trunk build --locked --release
+
+      - name: Build the desktop app
+        run: cargo build --release --locked --package bh-app --features tauri/custom-protocol
+
+      - name: Build the command line
+        run: cargo build --release --locked --package bh-cli
+
+      - name: Package
+        id: package
+        shell: pwsh
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          $version = $env:TAG.TrimStart("v")
+          $name = "barry-harness-$version-windows-x64"
+          $staging = Join-Path $env:RUNNER_TEMP $name
+          New-Item -ItemType Directory -Path $staging | Out-Null
+          Copy-Item target/release/barry.exe, target/release/bh.exe, LICENSE, README.md, CHANGELOG.md -Destination $staging
+          $archive = Join-Path $env:RUNNER_TEMP "$name.zip"
+          Compress-Archive -Path (Join-Path $staging "*") -DestinationPath $archive
+          $hash = (Get-FileHash -Algorithm SHA256 $archive).Hash.ToLowerInvariant()
+          Set-Content -Path "$archive.sha256" -Value "$hash  $name.zip" -NoNewline
+          "archive=$archive" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Publish the GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+          ARCHIVE: ${{ steps.package.outputs.archive }}
+        run: |
+          gh release create $env:TAG $env:ARCHIVE "$($env:ARCHIVE).sha256" --repo $env:GITHUB_REPOSITORY --title $env:TAG --generate-notes --verify-tag
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
